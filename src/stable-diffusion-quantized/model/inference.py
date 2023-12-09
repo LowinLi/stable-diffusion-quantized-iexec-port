@@ -9,7 +9,7 @@ from diffusers import StableDiffusionOnnxPipeline
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Runing stable-diffusion by excusing python script"
+        description="Runing stable-diffusion by executing python script"
     )
     parser.add_argument(
         "-p", "--prompt", help="this is a prompt cover config.json", required=False, default=None
