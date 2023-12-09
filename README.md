@@ -17,6 +17,7 @@ docker run -it -v ./volume:/app/output lowinli98/stable-diffusion-quantized:v0.1
 ```docker
 /app/env/bin/python inference.py
 ```
++ Find your picture in `./volume` which is mounted just now
 
 ## 2. Input prompt
 + Enter prompt to execute
