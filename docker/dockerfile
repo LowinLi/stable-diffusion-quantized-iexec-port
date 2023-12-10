@@ -24,3 +24,5 @@ COPY src/stable-diffusion-quantized/model/inference.py /app/inference.py
 FROM python:3.8.7-slim
 COPY --from=builder /app /app
 WORKDIR /app
+
+#ENTRYPOINT ["python3", "/src/inference.py"]

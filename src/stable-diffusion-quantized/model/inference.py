@@ -3,31 +3,27 @@ import os
 from datetime import datetime
 import json
 import logging
+import sys
 
 from diffusers import StableDiffusionOnnxPipeline
 
+iexec_out = os.environ['IEXEC_OUT']
+iexec_in = os.environ['IEXEC_IN']
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Runing stable-diffusion by executing python script"
-    )
-    parser.add_argument(
-        "-p", "--prompt", help="this is a prompt cover config.json", required=False, default=None
-    )
-    parser.add_argument(
-        "-o",
-        "--output_dir",
-        help="image output dir",
-        required=False,
-        default="./output",
-    )
-    args = parser.parse_args()
-    prompt = args.prompt
-    output_dir = args.output_dir
+    
+    output_dir = iexec_out
+
+    arg_prompt = str(sys.argv[1])
+    arg_num_inference_steps = int(sys.argv[1]) #should it be a string or a number?
+    
     with open("./config.json", "r") as f:
         config = json.load(f)
-    if prompt:
-        config["prompt"] = prompt
+    if arg_prompt:
+        config["prompt"] = arg_prompt
+    if arg_num_inference_steps:
+        config["num_inference_steps"] = arg_num_inference_steps
+
     logging.info(
         "generate %s, output png in %s"
         % (json.dumps(config, ensure_ascii=False), output_dir)
@@ -38,8 +34,11 @@ def main():
     image = quant_pipe(**config)["sample"][0]
     os.makedirs(output_dir, exist_ok=True)
     image.save(
-        os.path.join(output_dir, datetime.now().strftime("%Y%m%dT%H%M%S.%f.png"))
+        os.path.join(output_dir, "final.png")
     )
+
+    with open(iexec_out + '/computed.json', 'w+') as f:
+        json.dump({"deterministic-output-path" : iexec_out + '/final.png'}, f)
 
 
 if __name__ == "__main__":
