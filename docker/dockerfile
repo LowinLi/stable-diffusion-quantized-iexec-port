@@ -25,4 +25,4 @@ FROM python:3.8.7-slim
 COPY --from=builder /app /app
 WORKDIR /app
 
-#ENTRYPOINT ["python3", "/src/inference.py"]
+ENTRYPOINT ["python3", "/app/inference.py"]

@@ -4,7 +4,7 @@ BUILDROOT=$DIR/..
  
 cd $BUILDROOT
  
-CONTAINER="lowinli98/stable-diffusion-quantized"
+CONTAINER="id997/stable-diffusion-quantized"
 VERSION=`git describe --abbrev=0 --tags`
  
 IMAGE_NAME="${CONTAINER}:${VERSION}"
@@ -12,4 +12,4 @@ cmd="docker build -t $IMAGE_NAME -f $DIR/dockerfile $BUILDROOT --build-arg HUGGI
 echo $cmd
 eval $cmd
 
-docker push $IMAGE_NAME
+##docker push $IMAGE_NAME

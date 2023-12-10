@@ -15,7 +15,9 @@ def main():
     output_dir = iexec_out
 
     arg_prompt = str(sys.argv[1])
-    arg_num_inference_steps = int(sys.argv[1]) #should it be a string or a number?
+    arg_num_inference_steps = int(sys.argv[2]) #should it be a string or a number?
+    arg_height = int(sys.argv[3]) #should it be a string or a number?
+    arg_width = int(sys.argv[4]) #should it be a string or a number?
     
     with open("./config.json", "r") as f:
         config = json.load(f)
@@ -23,11 +25,12 @@ def main():
         config["prompt"] = arg_prompt
     if arg_num_inference_steps:
         config["num_inference_steps"] = arg_num_inference_steps
+    if arg_height:
+        config["height"] = arg_height
+    if arg_width:
+        config["width"] = arg_width
 
-    logging.info(
-        "generate %s, output png in %s"
-        % (json.dumps(config, ensure_ascii=False), output_dir)
-    )
+    
     quant_pipe = StableDiffusionOnnxPipeline.from_pretrained(
         "./onnx", provider="CPUExecutionProvider", local_files_only=True
     )
