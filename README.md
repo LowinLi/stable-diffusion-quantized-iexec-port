@@ -11,8 +11,8 @@ Inferencing the stable-diffusion model on CPU, through a compressed image of onl
 **3.** Seems you can't pass a sting with spaces as an arg, working on a fix
 
 docker run \
- -v /Users/id/Projects/web3diffusion/repos/stable-diffusion-quantized/io/iexec_in:/iexec_in \
- -v /Users/id/Projects/web3diffusion/repos/stable-diffusion-quantized/io/iexec_out:/iexec_out \
+ -v ./iexec_in:/iexec_in \
+ -v ./iexec_out:/iexec_out \
  -e IEXEC_IN=/iexec_in \
  -e IEXEC_OUT=/iexec_out \
- id997/stable-diffusion-quantized:v0.1 this_is_a_prompt 50 512 512
+ lowinli98/stable-diffusion-quantized:port-to-iexec-v0.1 "portrait photo of a asia old warrior chief, tribal panther make up, blue on red, side profile, looking away, serious eyes, 50mm portrait photography, hard rim lighting photography–beta –ar 2:3 –beta –upbeta –upbeta" 50 512 512
