@@ -1,9 +1,9 @@
 {
-    "prompt": "portrait photo of a asia old warrior chief, tribal panther make up, blue on red, side profile, looking away, serious eyes, 50mm portrait photography, hard rim lighting photography–beta –ar 2:3 –beta –upbeta –upbeta",
-    "height": 512,
-    "width": 512,
-    "num_inference_steps": 50,
-    "guidance_scale": 7.0,
-    "eta": 0.0,
-    "seed": 10
+  "prompt": "blank, white color",
+  "height": 512,
+  "width": 512,
+  "num_inference_steps": 50,
+  "guidance_scale": 7.0,
+  "eta": 0.0,
+  "seed": 10
 }
