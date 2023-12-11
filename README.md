@@ -15,4 +15,4 @@ docker run \
  -v /Users/id/Projects/web3diffusion/repos/stable-diffusion-quantized/io/iexec_out:/iexec_out \
  -e IEXEC_IN=/iexec_in \
  -e IEXEC_OUT=/iexec_out \
- lowinli98/stable-diffusion-quantized this_is_a_prompt 50 512 512
+ id997/stable-diffusion-quantized:v0.1 this_is_a_prompt 50 512 512
