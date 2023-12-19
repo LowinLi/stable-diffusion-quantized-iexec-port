@@ -5,7 +5,7 @@ BUILDROOT=$DIR/..
 cd $BUILDROOT
  
 CONTAINER="lowinli98/stable-diffusion-quantized"
-VERSION=port-to-iexec-v0.1
+VERSION=v0.3
  
 IMAGE_NAME="${CONTAINER}:${VERSION}"
 cmd="docker build -t $IMAGE_NAME -f $DIR/dockerfile $BUILDROOT --build-arg HUGGINGFACE_TOKEN=$1"
