@@ -3,3 +3,9 @@ docker/.env
 tag.sh
 docker/volume
 *.png
+__pycache__
+iexec_out
+*/onnx_model/*
+model
+iexec_in
+onnx_model

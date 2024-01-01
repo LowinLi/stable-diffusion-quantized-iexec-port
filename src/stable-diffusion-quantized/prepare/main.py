@@ -1,10 +1,14 @@
-from copy_pb import copy_weights
+import sys
 from download_onnx import download_save
 from quantization import quant
-import shutil
+
 
 if __name__ == "__main__":
-    shutil.rmtree("./onnx", ignore_errors=True)
-    download_save()
-    copy_weights()
-    quant()
+    """
+    example:
+    python main.py prompthero/openjourney
+    """
+    model_id = str(sys.argv[1])
+
+    model_dir = download_save(model_id)
+    quant(model_dir)
