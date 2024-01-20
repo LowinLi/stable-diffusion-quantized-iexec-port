@@ -1,24 +1,28 @@
-import argparse
 import os
 from datetime import datetime
 import json
 import logging
 import sys
 
-from diffusers import StableDiffusionOnnxPipeline
+from optimum.onnxruntime import ORTStableDiffusionPipeline
 
-iexec_out = os.environ['IEXEC_OUT']
-iexec_in = os.environ['IEXEC_IN']
+from prepare.download_onnx import download_save
+from prepare.quantization import quant
 
-def main():
+iexec_out = os.environ.get('IEXEC_OUT', './iexec_out')
+iexec_in = os.environ.get('IEXEC_IN', './iexec_in')
+model_path_root = os.environ.get('MODEL_PATH_ROOT', './model')
+
+
+def infer(arg_prompt, arg_num_inference_steps, arg_height, arg_width, arg_model_id):
     
     output_dir = iexec_out
-
-    arg_prompt = str(sys.argv[1])
-    arg_num_inference_steps = int(sys.argv[2]) #should it be a string or a number?
-    arg_height = int(sys.argv[3]) #should it be a string or a number?
-    arg_width = int(sys.argv[4]) #should it be a string or a number?
+    model_dir = os.path.join(model_path_root, arg_model_id)
     
+    if not os.path.exists(model_dir):
+        model_dir = download_save(arg_model_id)
+        quant(model_dir)
+
     with open("./config.json", "r") as f:
         config = json.load(f)
     if arg_prompt:
@@ -30,11 +34,9 @@ def main():
     if arg_width:
         config["width"] = arg_width
 
-    
-    quant_pipe = StableDiffusionOnnxPipeline.from_pretrained(
-        "./onnx", provider="CPUExecutionProvider", local_files_only=True
-    )
-    image = quant_pipe(**config)["sample"][0]
+
+    quant_pipe = ORTStableDiffusionPipeline.from_pretrained(model_dir)
+    image = quant_pipe(**config).images[0]
     os.makedirs(output_dir, exist_ok=True)
     image.save(
         os.path.join(output_dir, "final.png")
@@ -42,7 +44,3 @@ def main():
 
     with open(iexec_out + '/computed.json', 'w+') as f:
         json.dump({"deterministic-output-path" : iexec_out + '/final.png'}, f)
-
-
-if __name__ == "__main__":
-    main()

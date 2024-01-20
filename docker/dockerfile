@@ -7,22 +7,26 @@ COPY docker/requirements.txt /app/
 RUN echo "==> Installing ..."  && \
     pip3 install --no-cache-dir --upgrade pip && \
     pip3 install virtualenv && \
+    pip3 install nuitka==1.9.6 && \
     virtualenv -p /usr/local/bin/python /app/env && \
     /app/env/bin/pip install --no-cache-dir --upgrade pip && \
     /app/env/bin/pip install --no-cache-dir -r /app/requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu && \
     rm /app/requirements.txt
 
-# download and quantize model
-COPY src/stable-diffusion-quantized/prepare /app/prepare
-RUN cd /app/prepare/ && \
-    /app/env/bin/python main.py && \
-    cd /app && mv prepare/onnx onnx && rm -r prepare
+COPY src/stable-diffusion-quantized/config.json /app/config.json
+COPY src/stable-diffusion-quantized/main.py /app/main.py
 
-COPY src/stable-diffusion-quantized/model/config.json /app/config.json
-COPY src/stable-diffusion-quantized/model/inference.py /app/inference.py
+COPY src/stable-diffusion-quantized/prepare /tmp/prepare
+COPY src/stable-diffusion-quantized/inference.py /tmp/inference.py
+RUN apt-get update && apt-get install build-essential -y
+RUN cd /tmp && nuitka3 --module inference.py && nuitka3 --module prepare --include-package=prepare 
 
 FROM python:3.8.7-slim
+ENV MODEL_PATH_ROOT=/app/model/onnx_model
 COPY --from=builder /app /app
+COPY --from=builder /tmp/prepare.cpython-38-x86_64-linux-gnu.so /app/prepare.cpython-38-x86_64-linux-gnu.so
+COPY --from=builder /tmp/inference.cpython-38-x86_64-linux-gnu.so /app/inference.cpython-38-x86_64-linux-gnu.so
+
 WORKDIR /app
 
-ENTRYPOINT ["/app/env/bin/python", "/app/inference.py"]
+ENTRYPOINT ["/app/env/bin/python", "/app/main.py"]

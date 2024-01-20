@@ -4,6 +4,5 @@
   "width": 512,
   "num_inference_steps": 50,
   "guidance_scale": 7.0,
-  "eta": 0.0,
-  "seed": 10
+  "eta": 0.0
 }

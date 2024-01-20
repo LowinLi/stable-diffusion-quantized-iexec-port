@@ -1,22 +1,15 @@
+import logging
+import sys
 import os
-from diffusers import StableDiffusionOnnxPipeline
 
+from optimum.onnxruntime import ORTStableDiffusionPipeline
 
-def download_save():
-    token = os.environ.get("HUGGINGFACE_TOKEN")
+def download_save(model_id):
+    """huggingface model_id like prompthero/openjourney"""
 
-    pipe = StableDiffusionOnnxPipeline.from_pretrained(
-        "CompVis/stable-diffusion-v1-4",
-        revision="onnx",
-        provider="CPUExecutionProvider",
-        use_auth_token=token,
-    )
-    for tmp_dir in ["safety_checker", "text_encoder", "unet", "vae_decoder"]:
-        os.makedirs(os.path.join("./onnx", tmp_dir), exist_ok=True)
-        with open(os.path.join("./onnx", tmp_dir, "model.onnx"), "wb") as f:
-            f.write(b"")
-    pipe.save_pretrained("./onnx")
-
-
-if __name__ == "__main__":
-    download_save()
+    model_path_root = os.environ.get('MODEL_PATH_ROOT', './model')
+    model_dir = os.path.join(model_path_root, model_id)
+    pipeline = ORTStableDiffusionPipeline.from_pretrained(model_id, export=True)
+    pipeline.save_pretrained(model_dir)
+    logging.info("Saved %s to %s" % (model_id, model_dir))
+    return model_dir
